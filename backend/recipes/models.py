@@ -45,7 +45,7 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    tags = models.ManyToManyField(Tag, through='Tags', blank=False,
+    tags = models.ManyToManyField(Tag, through='TagRecipe', blank=False,
                                   verbose_name='Теги')
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
@@ -53,9 +53,9 @@ class Recipe(models.Model):
                                blank=False,
                                verbose_name='Автор')
     ingredients = models.ManyToManyField(Ingredient,
-                                         through='Ingredients',
+                                         through='IngredientRecipe',
                                          verbose_name='Список ингредиентов')
-    name = models.CharField(verbose_name='Картинка',
+    name = models.CharField(verbose_name='Название',
                             max_length=200, blank=False)
     image = models.ImageField(verbose_name='Картинка',
                               upload_to='recipes/images/',
@@ -70,6 +70,22 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class TagRecipe(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.tag} {self.recipe}'
+
+
+class IngredientRecipe(models.Model):
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.ingredient} {self.recipe}'
 
 
 class Subscription(models.Model):
