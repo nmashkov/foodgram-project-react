@@ -75,9 +75,9 @@ DJOSER = {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
     },
     'SERIALIZERS': {
-        'user': 'djoser.serializers.UserSerializer',
-        'current_user': 'djoser.serializers.UserSerializer',
-        'user_create': 'users.serializers.CustomUserCreateSerializer',  # edited
+        'user': 'users.serializers.CustomUserSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
+        'user_create': 'users.serializers.CustomUserCreateSerializer',
     },
 }
 
