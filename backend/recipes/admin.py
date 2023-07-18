@@ -17,6 +17,11 @@ class IngredientsAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+class TagsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'color', 'slug')
+    empty_value_display = '-пусто-'
+
+
 admin.site.register(Recipe, RecipesAdmin)
 admin.site.register(Ingredient, IngredientsAdmin)
-admin.site.register(Tag)
+admin.site.register(Tag, TagsAdmin)
