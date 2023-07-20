@@ -22,7 +22,7 @@ def load_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0002_alter_recipe_name'),
+        ('recipes', '0002_initial'),
     ]
 
     operations = [
