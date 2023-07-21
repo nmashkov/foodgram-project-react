@@ -3,7 +3,7 @@ from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer, UserSerializer
 
 from users.models import Subscription
-from recipes.serializers import RecipeShortDetailSerializer
+from recipes.models import Recipe
 
 
 User = get_user_model()
@@ -45,6 +45,13 @@ class CustomUserSerializer(UserSerializer):
                 user=request.user, author=obj
             ).exists()
         return False
+
+
+class RecipeShortDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class SubscribeSerializer(serializers.ModelSerializer):

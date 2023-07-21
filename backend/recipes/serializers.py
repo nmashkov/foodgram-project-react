@@ -67,10 +67,3 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
 class ShoppingSerializer(serializers.ModelSerializer):
     pass
-
-
-class RecipeShortDetailSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
