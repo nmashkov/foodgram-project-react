@@ -35,7 +35,9 @@ class SubscribeViewSet(UserViewSet):
             return Response({'Message': 'Subscribed'},
                             status=status.HTTP_201_CREATED)
         elif request.method == "DELETE":
-            Subscription.objects.filter(user=user, author=author).delete()
+            subscription = get_object_or_404(Subscription,
+                                             user=user, author=author)
+            subscription.delete()
             return Response({'Message': 'Unsubscribed'},
                             status=status.HTTP_204_NO_CONTENT)
 

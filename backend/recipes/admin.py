@@ -4,7 +4,7 @@ from recipes.models import Recipe, Tag, Ingredient
 
 
 class RecipesAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author')
+    list_display = ('name', 'author', 'cooking_time', 'pub_date')
     search_fields = ('name',)
     list_filter = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'

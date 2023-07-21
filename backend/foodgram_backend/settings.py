@@ -13,6 +13,9 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 
 INSTALLED_APPS = [
+    'api',
+    'users',
+    'recipes',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -23,9 +26,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'debug_toolbar',
-    'users',
-    'api',
-    'recipes',
 ]
 
 MIDDLEWARE = [
