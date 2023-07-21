@@ -8,18 +8,14 @@ app_name = 'users'
 
 router_v1 = DefaultRouter()
 router_v1.register(
-    r'users/(?P<id>\d+)/subscribe',
-    SubscribeViewSet,
-    basename='subscribe'
+    r'users/subscriptions',
+    SubscriptionsViewSet,
+    basename='subscriptions'
 )
+router_v1.register(r'users', SubscribeViewSet, basename='users')
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    path('users/subscriptions/',
-         SubscriptionsViewSet.as_view({'get': 'list'})),
-    # path('users/<int:pk>/subscribe/',
-    #     SubscribeViewSet.as_view({'post': 'create',
-    #                               'delete': 'destroy'})),
     path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 ]

@@ -1,10 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 
 from users.models import Subscription
-from recipes.models import Recipe
+from recipes.serializers import RecipeShortDetailSerializer
 
 
 User = get_user_model()
@@ -22,6 +21,12 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         model = User
         fields = ('email', 'id',
                   'username', 'first_name', 'last_name', 'password')
+
+    def validate_username(self, username):
+        if username == 'me':
+            raise serializers.ValidationError(
+                'Недопустимое имя пользователя.')
+        return username
 
 
 class CustomUserSerializer(UserSerializer):
@@ -47,27 +52,11 @@ class SubscribeSerializer(serializers.ModelSerializer):
         slug_field='username',
         read_only=True,
         default=serializers.CurrentUserDefault())
-    author = serializers.SlugRelatedField(
-        slug_field='username',
-        queryset=User.objects.all(),)
 
     class Meta:
         model = Subscription
-        fields = ('user', 'author')
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Subscription.objects.all(),
-                fields=['user', 'author'],
-                message='Нельзя подписаться дважды на одного и того же автора.'
-            )
-        ]
-
-
-class RecipeShortDetailSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields = ('user',)
+        extra_kwargs = {'author': {'write_only': True}}
 
 
 class SubscriptionsSerializer(serializers.ModelSerializer):
