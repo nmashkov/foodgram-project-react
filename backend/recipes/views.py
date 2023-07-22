@@ -3,7 +3,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status, permissions, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -27,6 +27,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
+    filter_backends = (filters.SearchFilter,)
+    search_fileds = ('^name',)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -68,7 +70,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(methods=('post', 'delete'), detail=True,
             permission_classes=(permissions.IsAuthenticated,))
-    def ShoppingCart(self, request, pk):
+    def shopping_cart(self, request, pk):
         """Добавление/удаление из списка покупок."""
         if request.method == 'POST':
             return self.add_to(ShoppingCart, request.user, pk)
@@ -95,7 +97,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False,
             permission_classes=(permissions.IsAuthenticated,))
-    def download_ShoppingCart(self, request):
+    def download_shopping_cart(self, request):
         user = request.user
         ingredients = RecipeIngredient.objects.filter(
             recipe__shoppers__user=request.user
