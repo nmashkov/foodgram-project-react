@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.db.models import UniqueConstraint
 
 
 User = get_user_model()
@@ -10,9 +11,13 @@ class Tag(models.Model):
     name = models.CharField(
         verbose_name='Тег',
         max_length=200,
-        blank=False
+        blank=False,
+        unique=True
     )
-    color = models.CharField(max_length=7, blank=False)
+    color = models.CharField(verbose_name='Цвет',
+                             max_length=7,
+                             blank=False,
+                             unique=True)
     slug = models.SlugField(
         verbose_name='Уникальный слаг',
         unique=True,
@@ -22,6 +27,7 @@ class Tag(models.Model):
     )
 
     class Meta:
+        ordering = ('pk',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -38,6 +44,7 @@ class Ingredient(models.Model):
     measurement_unit = models.CharField(max_length=200, blank=False)
 
     class Meta:
+        ordering = ('pk',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
@@ -57,8 +64,6 @@ class Recipe(models.Model):
                                blank=False)
     ingredients = models.ManyToManyField(Ingredient,
                                          through='RecipeIngredient',
-                                         through_fields=("recipe",
-                                                         "ingredient"),
                                          verbose_name='Список ингредиентов')
     name = models.CharField(verbose_name='Название',
                             max_length=200, blank=False)
@@ -88,16 +93,27 @@ class Recipe(models.Model):
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe,
                                on_delete=models.CASCADE,
+                               related_name='ingredient_list',
                                verbose_name='Рецепт')
     ingredient = models.ForeignKey(Ingredient,
                                    on_delete=models.CASCADE,
                                    verbose_name='Ингредиент')
     amount = models.PositiveIntegerField(blank=False,
+                                         default=1,
                                          verbose_name='Количество',
                                          validators=[MinValueValidator(1)])
 
+    class Meta:
+        default_related_name = 'ingridients_recipe'
+        verbose_name = 'Ингредиенты в рецептах'
+        constraints = [
+            UniqueConstraint(
+                fields=('recipe', 'ingredient'),
+                name='unique_ingredient_in_recipe'),
+        ]
+
     def __str__(self):
-        return f'{self.ingredient} в {self.recipe}'
+        return f'{self.ingredient} ({self.amount}) в {self.recipe}'
 
 
 class Favorite(models.Model):
@@ -107,7 +123,7 @@ class Favorite(models.Model):
         related_name='favorites',
         verbose_name='Пользователь'
     )
-    fav_recipe = models.ForeignKey(
+    recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
         related_name='favoriters',
@@ -115,12 +131,18 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        ordering = ('user',)
+        verbose_name = 'Избранный рецепт'
+        verbose_name_plural = 'Избранное'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'fav_recipe'],
+                fields=['user', 'recipe'],
                 name='unique_user_fav_recipe'
             )
         ]
+
+    def __str__(self):
+        return f'{self.recipe} в избранном у {self.user}'
 
 
 class Shopping_cart(models.Model):
@@ -138,9 +160,14 @@ class Shopping_cart(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Корзина покупок'
+        verbose_name_plural = 'Корзина покупок'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
-                name='unique_user_recipe'
+                name='unique_user_shopping_recipe'
             )
         ]
+
+    def __str__(self):
+        return f'{self.recipe} в корзине {self.user}'
