@@ -3,7 +3,6 @@ from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-PROJECT_BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_KEY', 'django-insecure-xcconooc18t-0d%_&*^d_i8&=+7#rw21d9ib*b=fa94rmh3pns')
 
@@ -114,12 +113,20 @@ DATABASES = {
     }
 }
 '''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': '/data/db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'db.sqlite3',
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {

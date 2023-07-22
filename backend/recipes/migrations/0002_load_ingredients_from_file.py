@@ -1,14 +1,14 @@
 import csv
 
 from django.db import migrations
-from foodgram_backend.settings import PROJECT_BASE_DIR
+from foodgram_backend.settings import BASE_DIR
 
 
 def load_data(apps, schema_editor):
     Ingredient = apps.get_model("recipes", "Ingredient")
 
     data_file = 'ingredients.csv'
-    dir = (f'{PROJECT_BASE_DIR}/data/{data_file}')
+    dir = (f'{BASE_DIR}/data/{data_file}')
 
     with open(dir, 'r', encoding='utf-8') as ingredients:
         line = csv.reader(ingredients)

@@ -38,8 +38,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
-        source='ingredient.measurement_unit'
-    )
+        source='ingredient.measurement_unit')
 
     class Meta:
         model = RecipeIngredient
@@ -55,7 +54,7 @@ class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipeIngredient
-        fields = ('id', 'amount', 'name', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
     def get_measurement_unit(self, ingredient):
         return ingredient.ingredient.measurement_unit
@@ -67,18 +66,16 @@ class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
-    ingredients = IngredientInRecipeSerializer(
-        many=True, read_only=True,
-        source='recipes'
-    )
+    ingredients = IngredientInRecipeSerializer(many=True, read_only=True,
+                                               source='ingredient_list')
     is_favorited = serializers.SerializerMethodField()
-    is_in_ShoppingCart = serializers.SerializerMethodField()
-    image = Base64ImageField(required=True, allow_null=True)
+    is_in_shopping_cart = serializers.SerializerMethodField()
+    image = Base64ImageField(required=True)
 
     class Meta():
         model = Recipe
         fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
-                  'is_in_ShoppingCart', 'name', 'image', 'text',
+                  'is_in_shopping_cart', 'name', 'image', 'text',
                   'cooking_time')
 
     def get_is_favorited(self, obj):
@@ -89,7 +86,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             ).exists()
         return False
 
-    def get_is_in_ShoppingCart(self, obj):
+    def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             return ShoppingCart.objects.filter(
