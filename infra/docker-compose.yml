@@ -1,5 +1,19 @@
 version: '3.3'
+
+volumes:
+  static:
+  media:
+  sqlite_data:
+
 services:
+  backend:
+    build:
+      context: ../backend/
+      dockerfile: Dockerfile
+    volumes:
+      - sqlite_data:/data
+      - static:/backend_static
+      - media:/app/media
 
   frontend:
     build:
@@ -7,11 +21,14 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
+
   nginx:
     image: nginx:1.19.3
     ports:
-      - "80:80"
+      - 8000:80
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
+      - static:/staticfiles
+      - media:/media

@@ -106,6 +106,7 @@ class RecipeIngredient(models.Model):
     class Meta:
         default_related_name = 'ingridients_recipe'
         verbose_name = 'Ингредиенты в рецептах'
+        verbose_name_plural = 'Ингредиенты в рецептах'
         constraints = [
             UniqueConstraint(
                 fields=('recipe', 'ingredient'),
@@ -145,7 +146,7 @@ class Favorite(models.Model):
         return f'{self.recipe} в избранном у {self.user}'
 
 
-class Shopping_cart(models.Model):
+class ShoppingCart(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

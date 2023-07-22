@@ -6,7 +6,7 @@ from rest_framework import serializers
 from users.serializers import CustomUserSerializer
 from recipes.models import (Tag, Ingredient, Recipe,
                             RecipeIngredient,
-                            Favorite, Shopping_cart)
+                            Favorite, ShoppingCart)
 
 
 class Base64ImageField(serializers.ImageField):
@@ -52,8 +52,6 @@ class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.StringRelatedField(
         source='ingredient.measurement_unit'
     )
-    ingredients = IngredientInRecipeSerializer(many=True,
-                                               source='ingredient_list')
 
     class Meta:
         model = RecipeIngredient
@@ -74,13 +72,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         source='recipes'
     )
     is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_cart = serializers.SerializerMethodField()
+    is_in_ShoppingCart = serializers.SerializerMethodField()
     image = Base64ImageField(required=True, allow_null=True)
 
     class Meta():
         model = Recipe
         fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
-                  'is_in_shopping_cart', 'name', 'image', 'text',
+                  'is_in_ShoppingCart', 'name', 'image', 'text',
                   'cooking_time')
 
     def get_is_favorited(self, obj):
@@ -91,10 +89,10 @@ class RecipeSerializer(serializers.ModelSerializer):
             ).exists()
         return False
 
-    def get_is_in_shopping_cart(self, obj):
+    def get_is_in_ShoppingCart(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return Shopping_cart.objects.filter(
+            return ShoppingCart.objects.filter(
                 user=request.user, recipe=obj
             ).exists()
         return False

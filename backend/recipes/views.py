@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from recipes.models import (Tag, Ingredient, Recipe, RecipeIngredient,
-                            Favorite, Shopping_cart)
+                            Favorite, ShoppingCart)
 from recipes.serializers import (TagSerializer, IngredientSerializer,
                                  RecipeSerializer, RecipeCPDSerializer)
 from users import permissions as users_permissions
@@ -58,12 +58,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeSerializer
         return RecipeCPDSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-
-    def perform_update(self, serializer):
-        serializer.save(author=self.request.user)
-
     @action(methods=('post', 'delete'), detail=True,
             permission_classes=(permissions.IsAuthenticated,))
     def favorite(self, request, pk):
@@ -74,11 +68,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(methods=('post', 'delete'), detail=True,
             permission_classes=(permissions.IsAuthenticated,))
-    def shopping_cart(self, request, pk):
+    def ShoppingCart(self, request, pk):
         """Добавление/удаление из списка покупок."""
         if request.method == 'POST':
-            return self.add_to(Shopping_cart, request.user, pk)
-        return self.delete_from(Shopping_cart, request.user, pk)
+            return self.add_to(ShoppingCart, request.user, pk)
+        return self.delete_from(ShoppingCart, request.user, pk)
 
     def add_to(self, model, user, pk):
         """Функция добавления."""
@@ -99,17 +93,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response({'errors': 'Рецепт уже удален!'},
                         status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=('get'), detail=True,
+    @action(detail=False,
             permission_classes=(permissions.IsAuthenticated,))
-    def download_shopping_cart(self, request):
+    def download_ShoppingCart(self, request):
         user = request.user
         ingredients = RecipeIngredient.objects.filter(
-            recipe__shopping_cart__user=request.user
+            recipe__shoppers__user=request.user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
         ).annotate(amount=Sum('amount'))
-        if not user.shopping_cart.exists():
+        if not user.shopping.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return data_generation(user, ingredients)
 
