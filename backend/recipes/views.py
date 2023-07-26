@@ -6,6 +6,7 @@ from django.db.models import Sum
 from rest_framework import viewsets, status, permissions, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 from recipes.models import (Tag, Ingredient, Recipe, RecipeIngredient,
                             Favorite, ShoppingCart)
@@ -36,6 +37,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     queryset = Recipe.objects.all()
     permission_classes = (users_permissions.IsAuthorAdminOrReadOnly,)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['author', 'is_favorited',
+                        'is_in_shopping_cart', 'tags']
 
     @staticmethod
     def _create_or_delete_item(request, recipe, model, serializer):
