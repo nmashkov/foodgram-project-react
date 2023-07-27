@@ -46,21 +46,12 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(write_only=True)
-    name = serializers.StringRelatedField(source='ingredient.name')
-    measurement_unit = serializers.StringRelatedField(
-        source='ingredient.measurement_unit'
-    )
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField()
 
     class Meta:
         model = RecipeIngredient
-        fields = ('id', 'name', 'measurement_unit', 'amount')
-
-    def get_measurement_unit(self, ingredient):
-        return ingredient.ingredient.measurement_unit
-
-    def get_name(self, ingredient):
-        return ingredient.ingredient.name
+        fields = ('id', 'amount')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -141,9 +132,8 @@ class RecipeCPDSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return RecipeSerializer(instance, context=context).data
+        serializer = RecipeSerializer(instance)
+        return serializer.data
 
     def validate_ingredients(self, value):
         if not value:
