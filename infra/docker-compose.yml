@@ -4,6 +4,7 @@ volumes:
   static:
   media:
   sqlite_data:
+  data:
 
 services:
   backend:
@@ -14,6 +15,7 @@ services:
       - sqlite_data:/data
       - static:/backend_static
       - media:/app/media
+      - data:/app/data
 
   frontend:
     build: ../frontend/
@@ -30,6 +32,8 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static:/staticfiles
       - media:/media
+      - ../data/.:/data
+      - data:/data
     depends_on:
       - frontend
       - backend
