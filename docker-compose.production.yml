@@ -23,16 +23,17 @@ services:
   
   frontend:
     image: nmashkov/foodgram_frontend
-    env_file: .env
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static_volume:/frontend_static
   
   gateway:
     image: nmashkov/foodgram_gateway
-    env_file: .env
     volumes:
       - static_volume:/staticfiles
       - media:/media
     ports:
       - 8000:80
+    depends_on:
+      - frontend
+      - backend
