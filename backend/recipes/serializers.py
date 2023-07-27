@@ -1,5 +1,6 @@
 import base64
 
+from django.db import transaction
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
@@ -46,12 +47,21 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField()
+    id = serializers.IntegerField(write_only=True)
+    name = serializers.StringRelatedField(source='ingredient.name')
+    measurement_unit = serializers.StringRelatedField(
+        source='ingredient.measurement_unit'
+    )
 
     class Meta:
         model = RecipeIngredient
-        fields = ('id', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
+
+    def get_measurement_unit(self, ingredient):
+        return ingredient.ingredient.measurement_unit
+
+    def get_name(self, ingredient):
+        return ingredient.ingredient.name
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -111,6 +121,7 @@ class RecipeCPDSerializer(serializers.ModelSerializer):
             ) for ingredient in ingredients]
         )
 
+    @transaction.atomic
     def create(self, validated_data):
         author = self.context.get('request').user
         tags = validated_data.pop('tags')
@@ -121,6 +132,7 @@ class RecipeCPDSerializer(serializers.ModelSerializer):
                                         ingredients=ingredients)
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')

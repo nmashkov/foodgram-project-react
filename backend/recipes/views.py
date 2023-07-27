@@ -29,9 +29,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
-    # filter_backends = (filters.SearchFilter,)
     filter_backends = (IngredientFilter,)
-    search_fileds = ('^name',)
+    search_fields = ('^name',)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -42,7 +41,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
 
-    @staticmethod
     def _create_or_delete_item(request, recipe, model, serializer):
         try:
             item = model.objects.get(user=request.user, recipe=recipe)
@@ -128,7 +126,7 @@ def data_generation(user, ingredients):
         for ingredient in ingredients
     ])
     shopping_list += f'\n\nFoodgram ({today:%Y})'
-    filename = f'{user.username}_shopping_list.txt'
+    filename = f'{user.username}_shopping_list'
     response = HttpResponse(
         shopping_list, content_type='text/plain,charset=utf8'
     )
