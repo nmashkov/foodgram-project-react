@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'debug_toolbar',
+    'colorfield',
 ]
 
 MIDDLEWARE = [
@@ -118,7 +119,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/data/db.sqlite3',
+        'NAME': '/app/data/db.sqlite3',
         # 'NAME': 'db.sqlite3',
     }
 }

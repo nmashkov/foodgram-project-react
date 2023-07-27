@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3'
 
 volumes:
   static:
@@ -6,29 +6,26 @@ volumes:
   data:
 
 services:
+  
   backend:
-    build:
-      context: ../backend/
-      dockerfile: Dockerfile
+    build: ./backend/
+    env_file: .env
     volumes:
       - static:/backend_static
       - media:/app/media
       - data:/app/data
-
+  
   frontend:
-    build: ../frontend/
+    build: ./frontend/
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static:/frontend_static
-
-  nginx:
-    image: nginx:1.19.3
+  
+  gateway:
+    build: ./infra/
     ports:
       - 8000:80
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ../docs/:/usr/share/nginx/html/api/docs/
-      - ../data/:/data
       - static:/staticfiles
       - media:/media
       - data:/data
