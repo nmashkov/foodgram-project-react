@@ -10,4 +10,12 @@ RUN pip install -r requirements.txt --no-cache-dir
 
 COPY . .
 
+RUN python manage.py collectstatic
+
+RUN mkdir /backend_static/
+
+RUN mkdir /backend_static/static/
+
+RUN cp -r /app/collected_static/. /backend_static/static/
+
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram_backend.wsgi"]
