@@ -39,12 +39,17 @@ class Ingredient(models.Model):
     name = models.CharField(
         verbose_name='Ингредиент',
         max_length=200,
-        blank=False
+        blank=False,
+        unique=True,
+        db_index=True
     )
-    measurement_unit = models.CharField(max_length=200, blank=False)
+    measurement_unit = models.CharField(
+        verbose_name='Единица измерения',
+        max_length=200,
+        blank=False)
 
     class Meta:
-        ordering = ('pk',)
+        ordering = ('name',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
