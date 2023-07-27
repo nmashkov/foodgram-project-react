@@ -40,7 +40,6 @@ class Ingredient(models.Model):
         verbose_name='Ингредиент',
         max_length=200,
         blank=False,
-        unique=True,
         db_index=True
     )
     measurement_unit = models.CharField(
