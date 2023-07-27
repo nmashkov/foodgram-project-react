@@ -22,7 +22,8 @@ services:
       - static:/frontend_static
   
   gateway:
-    build: ./infra/
+    build:
+      context: .
     ports:
       - 8000:80
     volumes:
