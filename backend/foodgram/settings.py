@@ -1,12 +1,19 @@
 import os
+import environ
 from pathlib import Path
 
 
+env = environ.Env(
+    DEBUG=(bool, True),
+)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.getenv('DJANGO_KEY', 'django-insecure-xcconooc18t-0d%_&*^d_i8&=+7#rw21d9ib*b=fa94rmh3pns')
 
-DEBUG = os.getenv('DEBUG', True)
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 

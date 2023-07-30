@@ -41,22 +41,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
 
-    def _create_or_delete_item(request, recipe, model, serializer):
-        try:
-            item = model.objects.get(user=request.user, recipe=recipe)
-            if request.method == 'DELETE':
-                item.delete()
-                return Response({'Message': 'Deleted'},
-                                status=status.HTTP_204_NO_CONTENT)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        except model.DoesNotExist:
-            if request.method == 'POST':
-                item = model.objects.create(user=request.user, recipe=recipe)
-                serializer = serializer(recipe)
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
             return RecipeSerializer
