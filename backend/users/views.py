@@ -28,8 +28,7 @@ class SubscribeViewSet(UserViewSet):
             if author == user:
                 raise serializers.ValidationError(
                     'Нельзя подписаться на самого себя.')
-            request = self.context.get('request')
-            if (author.subscribers.filter(user=user).count() == 1):
+            if author.subscribers.filter(user=user).exists():
                 raise serializers.ValidationError(
                     'Уже подписаны.')
             Subscription.objects.create(user=user, author=author)
