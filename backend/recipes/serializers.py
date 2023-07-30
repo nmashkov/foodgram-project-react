@@ -42,7 +42,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
-        )
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -58,7 +58,7 @@ class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
     name = serializers.StringRelatedField(source='ingredient.name')
     measurement_unit = serializers.StringRelatedField(
         source='ingredient.measurement_unit'
-        )
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -79,7 +79,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True,
         source='ingredient_list'
-        )
+    )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField(required=True)
@@ -113,7 +113,7 @@ class RecipeCPDSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(),
         required=True,
         many=True,
-        )
+    )
     ingredients = IngredientInRecipeWriteSerializer(many=True, required=True)
     image = Base64ImageField(required=True)
 
