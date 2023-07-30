@@ -2,7 +2,7 @@ import csv
 
 from django.db import migrations
 
-from foodgram_backend.settings import BASE_DIR
+from foodgram.settings import BASE_DIR
 
 
 def load_data(apps, schema_editor):
@@ -22,7 +22,7 @@ def load_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0001_initial'),
+        ('recipes', '0002_initial'),
     ]
 
     operations = [

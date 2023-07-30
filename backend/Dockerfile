@@ -18,4 +18,4 @@ RUN mkdir /backend_static/static/
 
 RUN cp -r /app/collected_static/. /backend_static/static/
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram_backend.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram.wsgi"]

@@ -83,7 +83,7 @@ DJOSER = {
     },
 }
 
-ROOT_URLCONF = 'foodgram_backend.urls'
+ROOT_URLCONF = 'foodgram.urls'
 
 TEMPLATES = [
     {
@@ -101,7 +101,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
+WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 
 DATABASES = {

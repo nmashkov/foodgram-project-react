@@ -8,6 +8,7 @@ from users.serializers import CustomUserSerializer
 from recipes.models import Tag, Ingredient, Recipe, RecipeIngredient
 
 
+# Стандартный метод кодирования изображения.
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
@@ -40,7 +41,8 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
-        source='ingredient.measurement_unit')
+        source='ingredient.measurement_unit'
+        )
 
     class Meta:
         model = RecipeIngredient
@@ -56,7 +58,7 @@ class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
     name = serializers.StringRelatedField(source='ingredient.name')
     measurement_unit = serializers.StringRelatedField(
         source='ingredient.measurement_unit'
-    )
+        )
 
     class Meta:
         model = RecipeIngredient
@@ -73,8 +75,11 @@ class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор рецепта."""
     author = CustomUserSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
-    ingredients = IngredientInRecipeSerializer(many=True, read_only=True,
-                                               source='ingredient_list')
+    ingredients = IngredientInRecipeSerializer(
+        many=True,
+        read_only=True,
+        source='ingredient_list'
+        )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField(required=True)
@@ -108,7 +113,7 @@ class RecipeCPDSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(),
         required=True,
         many=True,
-    )
+        )
     ingredients = IngredientInRecipeWriteSerializer(many=True, required=True)
     image = Base64ImageField(required=True)
 
