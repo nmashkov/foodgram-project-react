@@ -18,14 +18,14 @@ from users.serializers import RecipeShortDetailSerializer
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
-    '''Функция представления для тегов.'''
+    """Функция представления для тегов."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    '''Функция представления для ингредиентов.'''
+    """Функция представления для ингредиентов."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
@@ -34,7 +34,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    '''Функция представления для рецептов.'''
+    """Функция представления для рецептов."""
     http_method_names = ['get', 'post', 'patch', 'delete']
     queryset = Recipe.objects.all()
     permission_classes = (users_permissions.IsAuthorAdminOrReadOnly,)
@@ -53,9 +53,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if request.method == 'POST':
                 item = model.objects.create(user=request.user, recipe=recipe)
                 serializer = serializer(recipe)
-                return Response(
-                    serializer.data, status=status.HTTP_201_CREATED
-                )
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get_serializer_class(self):
@@ -101,6 +100,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False,
             permission_classes=(permissions.IsAuthenticated,))
     def download_shopping_cart(self, request):
+        """Функция создания и выгрузки пользователю его список покупок."""
         user = request.user
         ingredients = RecipeIngredient.objects.filter(
             recipe__shoppers__user=request.user
@@ -114,6 +114,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
 def data_generation(user, ingredients):
+    """Функция создания списка ингредиентов в текстовом файле."""
     today = datetime.today()
     shopping_list = (
         f'Список покупок для: {user.get_full_name()}\n\n'

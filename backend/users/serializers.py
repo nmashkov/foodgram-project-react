@@ -10,6 +10,7 @@ User = get_user_model()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+    """Сериализатор создания нового пользователя."""
     email = serializers.EmailField(max_length=254, allow_blank=False,
                                    required=True)
     first_name = serializers.CharField(max_length=150, allow_blank=False,
@@ -19,8 +20,12 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
     class Meta():
         model = User
-        fields = ('email', 'id',
-                  'username', 'first_name', 'last_name', 'password')
+        fields = ('email',
+                  'id',
+                  'username',
+                  'first_name',
+                  'last_name',
+                  'password')
 
     def validate_username(self, username):
         if username == 'me':
@@ -30,24 +35,25 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class CustomUserSerializer(UserSerializer):
+    """Сериализатор пользователя."""
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta():
         model = User
-        fields = ('email', 'id', 'username',
-                  'first_name', 'last_name',
+        fields = ('email',
+                  'id',
+                  'username',
+                  'first_name',
+                  'last_name',
                   'is_subscribed')
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request and request.user.is_authenticated:
-            return Subscription.objects.filter(
-                user=request.user, author=obj
-            ).exists()
-        return False
+        return obj.subscribers.filter(user=request.user).exists()
 
 
 class RecipeShortDetailSerializer(serializers.ModelSerializer):
+    """Сериализатор краткого описания рецепта."""
 
     class Meta:
         model = Recipe
@@ -55,6 +61,7 @@ class RecipeShortDetailSerializer(serializers.ModelSerializer):
 
 
 class SubscribeSerializer(serializers.ModelSerializer):
+    """Сериализатор создания/удаления подписки на автора."""
     user = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True,
@@ -67,14 +74,21 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionsSerializer(serializers.ModelSerializer):
+    """Сериализатор представления всех подписок пользователя."""
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField(read_only=True)
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name',
-                  'is_subscribed', 'recipes', 'recipes_count')
+        fields = ('email',
+                  'id',
+                  'username',
+                  'first_name',
+                  'last_name',
+                  'is_subscribed',
+                  'recipes',
+                  'recipes_count')
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -91,8 +105,4 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request and request.user.is_authenticated:
-            return Subscription.objects.filter(
-                user=request.user, author=obj
-            ).exists()
-        return False
+        return obj.subscribers.filter(user=request.user).exists()

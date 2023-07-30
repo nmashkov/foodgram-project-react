@@ -20,14 +20,16 @@ class SubscribeViewSet(UserViewSet):
         user = request.user
         author = get_object_or_404(User, id=id)
         serializer = SubscribeSerializer(
-            user, data=request.data, context={"request": request}
-        )
+            user,
+            data=request.data,
+            context={"request": request})
         serializer.is_valid(raise_exception=True)
         if request.method == "POST":
             if author == user:
                 raise serializers.ValidationError(
                     'Нельзя подписаться на самого себя.')
-            if Subscription.objects.filter(user=user, author=author).exists():
+            request = self.context.get('request')
+            if (author.subscribers.filter(user=user).count() == 1):
                 raise serializers.ValidationError(
                     'Уже подписаны.')
             Subscription.objects.create(user=user, author=author)
