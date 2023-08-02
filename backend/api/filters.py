@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class IngredientFilter(SearchFilter):
-    """Определение фильтра для ингредиента"""
+    """Фильтр для ингредиента, поиск по имени."""
     search_param = 'name'
 
 

@@ -12,7 +12,7 @@ from recipes.models import (Tag, Ingredient, Recipe, RecipeIngredient,
                             Favorite, ShoppingCart)
 from recipes.serializers import (TagSerializer, IngredientSerializer,
                                  RecipeSerializer, RecipeCPDSerializer)
-from recipes.filters import RecipeFilter, IngredientFilter
+from api.filters import RecipeFilter, IngredientFilter
 from users import permissions as users_permissions
 from users.serializers import RecipeShortDetailSerializer
 
