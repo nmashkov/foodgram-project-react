@@ -12,7 +12,7 @@ router_v1.register(
     SubscriptionsViewSet,
     basename='subscriptions'
 )
-router_v1.register(r'users', SubscribeViewSet, basename='users')
+router_v1.register('users', SubscribeViewSet, basename='users')
 
 urlpatterns = [
     path('', include(router_v1.urls)),

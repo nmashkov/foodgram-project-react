@@ -15,7 +15,11 @@ User = get_user_model()
 class SubscribeViewSet(UserViewSet):
     """Функция создания и удаления подписки."""
 
-    @action(detail=True, methods=["post", "delete"])
+    @action(
+        detail=True,
+        methods=["post", "delete"],
+        permission_classes=[permissions.IsAuthenticated]
+    )
     def subscribe(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)

@@ -49,10 +49,10 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request.user.is_authenticated:
-            return obj.subscribers.filter(user=request.user).exists()
-        else:
+        if request is None or request.user.is_anonymous:
             return False
+        else:
+            return obj.subscribers.filter(user=request.user).exists()
 
 
 class RecipeShortDetailSerializer(serializers.ModelSerializer):

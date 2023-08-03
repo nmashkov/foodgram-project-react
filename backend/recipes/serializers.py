@@ -99,17 +99,17 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
-        if request.user.is_authenticated:
-            return obj.favoriters.filter(user=request.user).exists()
-        else:
+        if request is None or request.user.is_anonymous:
             return False
+        else:
+            return obj.favoriters.filter(user=request.user).exists()
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
-        if request.user.is_authenticated:
-            return obj.shoppers.filter(user=request.user).exists()
-        else:
+        if request is None or request.user.is_anonymous:
             return False
+        else:
+            return obj.shoppers.filter(user=request.user).exists()
 
 
 class RecipeCPDSerializer(serializers.ModelSerializer):
@@ -145,6 +145,7 @@ class RecipeCPDSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.tags.set(tags)
+        recipe.save()
         self.create_ingredients_amounts(recipe=recipe,
                                         ingredients=ingredients)
         return recipe
