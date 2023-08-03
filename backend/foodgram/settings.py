@@ -1,19 +1,12 @@
 import os
-import environ
 from pathlib import Path
 
 
-env = environ.Env(
-    DEBUG=(bool, True),
-)
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.getenv('DJANGO_KEY', 'default')
 
-DEBUG = env('DEBUG')
+DEBUG = bool(os.getenv('DEBUG', False))
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
@@ -69,7 +62,7 @@ DJOSER = {
     'PERMISSIONS': {
         'user_list': ['rest_framework.permissions.AllowAny'],
         'user_create': ['rest_framework.permissions.AllowAny'],
-        'user': ['rest_framework.permissions.IsAuthenticated'],
+        'user': ['rest_framework.permissions.AllowAny'],
         'set_password': ['rest_framework.permissions.IsAuthenticated'],
         'token_create': ['rest_framework.permissions.AllowAny'],
         'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
@@ -110,14 +103,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('POSTGRES_DB', 'django'),
+#         'USER': os.getenv('POSTGRES_USER', 'django'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'dj345678'),
+#         'HOST': os.getenv('DB_HOST', 'db_localhost'),
+#         'PORT': os.getenv('DB_PORT', 5432)
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'django'),
-        'USER': os.getenv('POSTGRES_USER', 'django'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'dj345678'),
-        'HOST': os.getenv('DB_HOST', 'db_localhost'),
-        'PORT': os.getenv('DB_PORT', 5432)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/app/data/db.sqlite3',
+        # 'NAME': 'db.sqlite3',
     }
 }
 
