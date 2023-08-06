@@ -44,7 +44,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeSerializer
         return RecipeCPDSerializer
 
-    @action(methods=('post', 'delete'), detail=True,
+    @action(methods=('post', 'delete'),
+            detail=True,
             permission_classes=(permissions.IsAuthenticated,))
     def favorite(self, request, pk):
         """Добавление/удаление из избранного."""
@@ -52,7 +53,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.add_to(Favorite, request.user, pk)
         return self.delete_from(Favorite, request.user, pk)
 
-    @action(methods=('post', 'delete'), detail=True,
+    @action(methods=('post', 'delete'),
+            detail=True,
             permission_classes=(permissions.IsAuthenticated,))
     def shopping_cart(self, request, pk):
         """Добавление/удаление из списка покупок."""
