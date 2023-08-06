@@ -75,9 +75,9 @@ class UserViews(UserViewSet):
         permission_classes=[permissions.IsAuthenticated]
     )
     def subscriptions(self, request):
-        """Функция подписок пользователя."""
+        """Функция представления подписок."""
         user = request.user
-        queryset = User.objects.filter(subscriptions__user=user)
+        queryset = User.objects.filter(subscribers__user=user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscriptionsSerializer(
             pages, many=True, context={'request': request}
